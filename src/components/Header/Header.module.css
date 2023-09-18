@@ -1,0 +1,10 @@
+.header_container {
+  text-align: center;
+}
+
+.header_title {
+  color: rgba(217, 104, 104, 0.5);
+  font-size: 72px;
+  font-weight: 100;
+  margin: 0;
+}

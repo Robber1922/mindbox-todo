@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { Header, TodoPanel, TodoList } from "./components";
+import styles from "./App.module.css";
 
-function App() {
+const DEFAULT_TODO_LIST = [
+  { id: 1, name: "Тестовое задание", checked: false },
+  { id: 2, name: "Прекрасный код", checked: false },
+  { id: 3, name: "Покрытие тестами", checked: true },
+];
+
+export const App = () => {
+  const [todos, setTodos] = useState(DEFAULT_TODO_LIST);
+
+  const addTodo = ({ name }: Omit<Todo, "id" | "checked">) => {
+    setTodos([
+      ...todos,
+      { id: todos[todos.length - 1].id + 1, name, checked: false },
+    ]);
+  };
+
+  const deleteCompletedTodos = () => {
+    const completedTodoIds = todos
+      .filter((todo) => todo.checked)
+      .map((todo) => todo.id);
+
+    const updatedTodos = todos.filter(
+      (todo) => !completedTodoIds.includes(todo.id)
+    );
+
+    setTodos(updatedTodos);
+  };
+
+  const checkTodo = (id: Todo["id"]) => {
+    setTodos(
+      todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, checked: !todo.checked };
+        }
+        return todo;
+      })
+    );
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles.app_container}>
+      <div className={styles.container}>
+        <Header />
+        <TodoPanel mode="add" addTodo={addTodo} />
+        <TodoList
+          todos={todos}
+          checkTodo={checkTodo}
+          deleteCompletedTodos={deleteCompletedTodos}
+        />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
